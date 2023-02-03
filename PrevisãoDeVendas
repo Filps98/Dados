@@ -1,15 +1,13 @@
-#  Lembre-se de instalar todas as bibliotecas necessárias
-#  A planilha deve ser nomeada como Dados.xlsx
 #  O código da print em todos os dados da planilha + os 5 dias de previsão
 
 import pandas as pd
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 from datetime import timedelta
 
-# carregue sua planilha em um DataFrame do pandas
+
 df = pd.read_excel("Dados.xlsx")
 
-# defina o número de termos autorregressivos (p), 
+# fiz a definição do número de termos autorregressivos (p), 
 # número de termos da diferença sazonal (d), 
 # número de termos da média móvel (q), 
 # número de termos da diferença sazonal da média móvel (P),
@@ -32,7 +30,7 @@ model_fit = model.fit()
 # faz previsões para os próximos 5 dias
 forecast = model_fit.forecast(steps=5)
 
-# criea uma série de data para os próximos 5 dias
+# cria uma série de data para os próximos 5 dias
 last_date = df["Data"].iloc[-1]
 future_dates = [last_date + timedelta(days=x) for x in range(1,6)]
 
