@@ -1,0 +1,46 @@
+#  Lembre-se de instalar todas as bibliotecas necessárias
+#  A planilha deve ser nomeada como Dados.xlsx
+#  O código da print em todos os dados da planilha + os 5 dias de previsão
+
+import pandas as pd
+from statsmodels.tsa.statespace.sarimax import SARIMAX
+from datetime import timedelta
+
+# carregue sua planilha em um DataFrame do pandas
+df = pd.read_excel("Dados.xlsx")
+
+# defina o número de termos autorregressivos (p), 
+# número de termos da diferença sazonal (d), 
+# número de termos da média móvel (q), 
+# número de termos da diferença sazonal da média móvel (P),
+# número de termos da média móvel da diferença sazonal (D) 
+# e o número de termos da média móvel (Q)
+
+p = 1
+d = 1
+q = 1
+P = 3
+D = 1
+Q = 1
+
+# cria o modelo SARIMA
+model = SARIMAX(df["Vendas"], order=(p, d, q), seasonal_order=(P, D, Q, 12))
+
+# treina o modelo com os dados
+model_fit = model.fit()
+
+# faz previsões para os próximos 5 dias
+forecast = model_fit.forecast(steps=5)
+
+# criea uma série de data para os próximos 5 dias
+last_date = df["Data"].iloc[-1]
+future_dates = [last_date + timedelta(days=x) for x in range(1,6)]
+
+# cria um novo DataFrame com as previsões e as datas
+forecast_df = pd.DataFrame({"Data": future_dates, "Vendas": forecast})
+
+# adiciona as previsões à sua planilha existente
+df = pd.concat([df, forecast_df])
+
+# imprime o DataFrame resultante
+print(df)
